@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+  </head>
+  <body>
+    
+    <h1>This is the look of frontEnd page.</h1> 
+    <input type="number" name="a" id = "a" value="">
+    <input type="number" name="b" id = "b" value="">
+    <button onclick = "sendRequest()">Submit</button>
+
+    <script>
+    console.log("hellooooooooooooooooooo.")
+    let a = document.getElementById("a").value;
+    let b = document.getElementById("b").value;
+    async function sendRequest(){
+      try{
+       let response = await fetch("http://localhost:3001/sum", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+          },
+        body : JSON.stringify({
+          a:Number(a),
+          b:Number(b),
+        })
+      })
+      let data = await response.json()
+      console.log("data :",data);
+      }
+      catch(error){
+        console.log("Error : ", error)
+      }
+    }
+    // sendRequest();
+    </script>
+
+
+  </body>
+</html>

@@ -1,0 +1,11 @@
+# Hello I am creating my own CLI commands.
+- This file will work as my tester file.
+
+# The steps I am taking to make :
+- first I installed process.
+- process.argv is an array that contain node environment variables or arguments.
+- process.argv[0] : It stores executable path for file.
+- process.argv[1] : It stores path of file.
+- process.argv[2] (and more) : It stores arguments passed by user in terminal.
+
+# Then I will use commanderjs

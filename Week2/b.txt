@@ -1,0 +1,4 @@
+I/O heavy operation :
+- Reading a file
+- Starting a clock
+- HTTP request

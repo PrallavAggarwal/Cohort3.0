@@ -1,0 +1,19 @@
+*{
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.wrapper{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:10px;
+}
+.wrapper>div{
+  background-color:grey;
+  font-size:20vh;
+  border-radius:5px;
+  
+}

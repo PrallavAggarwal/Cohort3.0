@@ -1,0 +1,4 @@
+NEW DATA THAT IS INSERTED WHILE DOING ASYNCHRONOUS OPEREATIONS.
+
+
+there   are going    to be               lots of     spaces. Which I will remove.

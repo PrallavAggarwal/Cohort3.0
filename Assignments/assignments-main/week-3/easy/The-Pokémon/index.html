@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <style>
+  *{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  }
+  #wrapper{
+  height:100vh;
+  width:100vw;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+flex-direction: column;
+  }
+  #card{
+  height:60%;
+  min-width:40%;
+  border:1px solid black;
+  }
+  </style>
+  <body>
+ <div id="wrapper">
+    <label for="number">Write number</label> <input type="number" name="number" placeholder="write number to display pokemon." value=""> <button onclick="pokeDetail()">Show pokemon</button>
+    <div id="card">
+      
+    </div>
+  </div> 
+    <script>
+    // let id = document.querySelector("input").value;
+    // console.log("id : ", id);
+    
+    async function pokeDetail(){
+    let id = document.querySelector("input").value;
+    console.log("id : ", id)
+      let response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id == "" ? 1 : id}`);
+      let data = await response.json();
+      console.log(data);
+      let name = document.createElement("div");
+      let pokeName = data.name;
+      let newName = pokeName.charAt(0).toUpperCase() + pokeName.slice(1);
+      name.innerHTML = `Name : <b>${newName}</b>`;
+      console.log("name : ", name);
+      document.getElementById("card").appendChild(name);
+    }
+    pokeDetail();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <h1 class="timer">
+    </h1>
+    <div id="input">
+      <input type="text" id="input_field" name="taskName" placeholder="write your task Name" >
+      </input>
+      <label for="taskName" onclick="addTask()">Add Task</label>
+    </div>
+    <hr/>
+    <div id="Tasks">
+      <!-- <div id="todo-1"> -->
+      <!--   1. Task01 -->
+      <!--   <button type="text" onclick="deleteToDo(1)">delete</button> -->
+      <!-- </div> -->
+      <!-- <div id="todo-2"> -->
+      <!--   2. Task01 -->
+      <!--   <button type="text" onclick="deleteToDo(2)">delete</button> -->
+      <!-- </div> -->
+      <!-- <div id="todo-3"> -->
+      <!--   3. Task01 -->
+      <!--   <button type="text" onclick="deleteToDo(3)">delete</button> -->
+      <!-- </div> -->
+    </div>
+    <script src= "./todo.js">
+      let todos = []
+      function addTask(){
+        todos.push({
+          title:"",
+          id:,
+          creationTime:,
+        });
+        render();
+      }
+      function deleteTask(){
+        todos.pop();
+        render();
+      }
+      function createComponent(){
+        let newTask = document.createElement("div");
+        let 
+      } 
+      function render(){
+
+      }
+    </script>
+  </body>
+</html>

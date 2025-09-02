@@ -1,0 +1,6 @@
+Synchronous code :
+- It is a code that is executed line by line in order its written.
+- Each operation waits for previous one to complete before moving to next one.
+
+
+

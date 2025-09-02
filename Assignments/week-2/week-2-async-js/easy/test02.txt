@@ -1,0 +1,5 @@
+This file is for testing purpose.
+
+In this we will write data using fs.writeFile method of fs library.
+
+we will be testing asynchronous operations.
