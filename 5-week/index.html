@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
     
@@ -11,21 +12,29 @@
     <input type="number" name="a" id = "a" value="">
     <input type="number" name="b" id = "b" value="">
     <button onclick = "sendRequest()">Submit</button>
+    <button onclick = "giveData()">show data</button>
+    <label for="message">Message Id</label>
+    <input type="number" name="message" id="message" value="">
+    <button onclick = "showMessage()">Show message</button>
 
     <script>
     console.log("hellooooooooooooooooooo.")
-    let a = document.getElementById("a").value;
-    let b = document.getElementById("b").value;
+
     async function sendRequest(){
       try{
-       let response = await fetch("http://localhost:3001/sum", {
+    let a = document.getElementById("a").value;
+    let b = document.getElementById("b").value;
+    console.log("a:",a);
+    console.log("b:",b);
+    console.log("a+b :", a+b);
+        let response = await fetch("http://localhost:3001/sum", {
         method: "POST",
-        headers: {
+        headers:{
             "Content-Type": "application/json",
           },
         body : JSON.stringify({
-          a:Number(a),
-          b:Number(b),
+          a:a,
+          b:b,
         })
       })
       let data = await response.json()
@@ -36,6 +45,60 @@
       }
     }
     // sendRequest();
+
+    async function giveData(){
+      try{
+        let res = await fetch("http://localhost:3001/plantData");
+        console.log("response : ",res);
+        let data = await res.json();
+        console.log("data : ", data);
+      }
+      catch(error){
+        console.log("error : ", error);
+      }
+    }
+
+    // async function showMessage(){
+    //   try{
+    //     let id=document.getElementById("message").value;
+    //     console.log("id : ", id)
+    //     let res = await fetch("http://localhost:3001/messages",{
+    //       method:"POST",
+    //       headers:{
+    //         "Content-Type": "application/json",
+    //       },
+    //       body:JSON.stringify({
+    //         id:Number(id),
+    //       })
+    //     });
+    //     console.log("Response for messages : ", res);
+    //     let data = await res.json();
+    //     console.log("data for messages : ", data);
+    //   }
+    //   catch(error){
+    //     console.log("Error while dispalying message : \n", error);
+    //   }
+    // }
+
+    //++++++++++++++++++Applying sendMessage() using axios ++++++++++++++++
+    async function showMessage(){
+      let id=document.getElementById("message").value;
+      console.log("id : ", id)
+
+      try{
+        let res = await axios.post('http://localhost:3001/messages',{
+          id:id,
+        })
+        console.log("response for messages :", res);
+        // let data = await res.json();
+        console.log("data for messages : ", res.data);
+      }
+      catch(error){
+        console.log('error :',error);
+      }
+    }
+
+
     </script>
 
 

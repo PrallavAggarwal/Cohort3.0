@@ -1,5 +1,5 @@
 {
-  "name": "5-week",
+  "name": "6-week",
   "version": "1.0.0",
   "main": "1-index.js",
   "scripts": {
@@ -11,7 +11,6 @@
   "type": "commonjs",
   "description": "",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "jsonwebtoken": "^9.0.2"
   }
 }
