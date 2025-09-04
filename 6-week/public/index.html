@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Auth website</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+  <h1>Authentication website</h1>
+    <h2>Sign-up</h2>
+    <hr>
+    <form>
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username_signup" value="">
+      <br>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password_signup" value="">
+      <br>
+    </form>
+
+      <button onclick="signup()">Submit</button>
+    <br>
+    <h2>Sign-in</h2>
+    <hr>
+    <form>
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username_signin" value="">
+      <br>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password_signin" value="">
+      <br>
+    </form>
+      <button onclick="signin()">Submit</button>
+    <br>
+    <div id="user_information">
+      
+    </div>
+    <button onclick="logout()">Logout</button>
+    <script>
+      //create function for sign up 
+      async function signup(){
+        //fetch username and password from input
+        const username = document.getElementById("username_signup").value;
+        const password = document.getElementById("password_signup").value;
+        //send this to backend server
+        const response = await axios.post("http://localhost:3001/signup",{
+          username:username,
+          password:password
+        });
+        alert("YOU ARE SIGNED UP.");
+      }
+      async function signin(){
+        //fetch username and password from input
+        const username = document.getElementById("username_signin").value;
+        const password = document.getElementById("password_signin").value;
+        //send this to backend server
+        const response = await axios.post("http://localhost:3001/signin",{
+          username:username,
+          password:password
+        });
+        console.log("response.data : ", response.data);
+        localStorage.setItem("token",response.data.user.token);
+        // alert("YOU ARE SIGNED IN.");
+      }
+
+      async function signin(){
+        //fetch username and password from input
+        const username = document.getElementById("username_signin").value;
+        const password = document.getElementById("password_signin").value;
+        //send this to backend server
+        const response = await axios.post("http://localhost:3001/signin",{
+          username:username,
+          password:password
+        });
+        console.log("response.data : ", response.data);
+        localStorage.setItem("token",response.data.user.token);
+        // alert("YOU ARE SIGNED IN.");
+      }
+
+
+    </script>
+  </body>
+</html>
