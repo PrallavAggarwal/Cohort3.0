@@ -6,8 +6,10 @@ const JWT_SECRET = 'kisiKoNhiBatana';
 const { UserModel, TodoModel } = require('./db.js');
 const { z } = require('zod');
 const app = express();
+const dotenv = require('dotenv');
 app.use(express.json());
-mongoose.connect('ur url')
+let url = process.env.DB_URL;
+mongoose.connect(url);
 
 app.post('/signup', async (req, res) => {
   //describe your schema to zod.
