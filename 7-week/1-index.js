@@ -7,7 +7,7 @@ const { UserModel, TodoModel } = require('./db.js');
 const { z } = require('zod');
 const app = express();
 app.use(express.json());
-mongoose.connect('mongodb+srv://shinchan1990n:HT0kig9bCgKkb9NJ@cluster0.zvf7zhv.mongodb.net/1-TODO')
+mongoose.connect('ur url')
 
 app.post('/signup', async (req, res) => {
   //describe your schema to zod.
