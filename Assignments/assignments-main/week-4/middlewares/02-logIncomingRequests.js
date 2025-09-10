@@ -4,13 +4,14 @@ const express = require('express');
 const app = express();
 
 function logRequests(req, res, next) {
-    // write the logic for request log here
+  // write the logic for request log here
+  console.log(req);
 }
 
 app.use(logRequests);
 
 app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Hello, world!' });
+  res.status(200).json({ message: 'Hello, world!' });
 });
 
 module.exports = app;
