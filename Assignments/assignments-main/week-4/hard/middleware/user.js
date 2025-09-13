@@ -1,6 +1,9 @@
 function userMiddleware(req, res, next) {
   // Implement user auth logic
-  let email = req.body.email;
+  let token = req.header('token')
+  let decodedData = jwt.decode(token, JWT_SECRET_KEY)
+  let
+    let email = req.body.email;
   let password = req.body.password;
   if (!email || !password) {
     if (!email) {

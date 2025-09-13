@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const adminMiddleware = require("../middleware/user");
-const { User, Todo } = require('../database/index.js')
+const { User, Todo } = require('../database/index.js');
+const { success } = require("zod");
 const router = Router();
 
 // todo Routes
@@ -8,7 +9,10 @@ router.post('/create', async (req, res) => {
   // Implement todo creation logic
   let title = req.body.title;
   let description = req.body.description;
-  let userid = req.header('userid');
+  let token = req.header('token');
+  let decoded = jwt.verify(token, JWT_SECRET_KEY)
+  let userid = decoded.userid;
+
 
   //check whether empty or not 
   if (!title || !description || !userid) {
@@ -40,6 +44,26 @@ router.post('/create', async (req, res) => {
   //now since todo collection is updated with userid
   //so user collection for particular should be updated with todoid.
   //done._id  ::: isko user.todo[ yaha  ]  
+  //const user = await User.findById(userid);
+  //console.log("user fetched while adding todo. ", user);
+  //now i wanna do user.todo.push(done._id);   /// but what will be the syntax for this ?
+  try {
+    await User.updateOne({ _id: userid }, { $push: { todo: done._id } })
+    console.log("user updated with todo id.");
+  }
+  catch (error) {
+    console.log("some error occured while adding todo to user schema.");
+    console.log("ERROR :: ", error)
+    return res.status(500).json({
+      success: false,
+      message: "error while saving todo to user schema.",
+      error: error
+    })
+  }
+
+
+
+
   if (done) {
     console.log("todo entry in db created.")
     return res.status(200).json({
@@ -56,14 +80,17 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.put('/update', adminMiddleware, (req, res) => {
+router.put('/update', adminMiddleware, async (req, res) => {
   // Implement update todo  logic
   let id = req.body.todoid;
   let title = req.body.title;
   let description = req.body.description;
-  let userid = req.header('userid')
+  let token = req.header('token');
+  let decoded = jwt.verify(token, JWT_SECRET_KEY)
+  let userid = decoded.userid;
+
   //check id empty or not 
-  if (!id && !userid) {
+  if (!id || !userid) {
     console.log("user gave empty id to update todo.");
     return res.status(400).json({
       success: false,
@@ -79,9 +106,7 @@ router.put('/update', adminMiddleware, (req, res) => {
   }
 
   //now id is not empty and we have title or description.
-  let user = await User.findOne({
-    todo: id,
-  })
+  let user = await User.findById(userid)
   if (!user) {
     console.log("no user exist for this id.");
     return res.status(400).json({
@@ -89,28 +114,152 @@ router.put('/update', adminMiddleware, (req, res) => {
       message: "no user for this id."
     })
   }
-  if (title) {
-    title = String(title);
+  let include = user.todo.includes(id);
+  if (include) {
+    try {
+      if (title) {
+        title = String(title);
+        await Todo.findOneAndUpdate({ _id: todoid }, { title: title });
+        console.log("title updated successfully.");
 
-
+      }
+      if (description) {
+        description = String(description);
+        await Todo.findOneAndUpdate({ _id: todoid }, { description: description })
+        console.log("description updated successfully.");
+      }
+      return res.status(200).json({
+        success: true,
+        message: "details updated."
+      })
+    }
+    catch (error) {
+      console.log("error while updating title or description");
+      return res.status(500).json({
+        success: false,
+        message: "title or description not updated due to server error.",
+        error: error
+      })
+    }
   }
-  title = String(title);
-  description = String(description);
+  else {
+    console.log("user doesn't have this todo.")
+    return res.status(400).json({
+      success: false,
+      message: "user don't have this todo."
+    })
+  }
 
 
-});
+}
+);
 
-router.delete('/delete', adminMiddleware, (req, res) => {
+router.delete('/delete', adminMiddleware, async (req, res) => {
   // Implement delete todo logic
+  try {
+    let todoid = req.body.todoid;
+    let token = req.header('token');
+    let decoded = jwt.verify(token, JWT_SECRET_KEY)
+    let userid = decoded.userid;
+
+    if (!todoid) {
+      console.log("todoid not present in req.body.");
+      return res.status(400).json({
+        success: false,
+        message: "todoid not present. Can not delete todo."
+      })
+    }
+
+    let todo = await Todo.findById(todoid);
+
+    if (!todo) {
+      console.log("no todo in db with mentioned id.");
+      return res.status(400).json({
+        success: false,
+        message: "todo not present with this id in db. Can not delete todo."
+      })
+    }
+    let deletedTodoUser = await User.findOneAndUpdate({ _id: userid }, { $pull: { todo: { _id: todoid } } });
+    let deletedTodo = await Todo.findByIdAndDelete(todoid);
+    console.log("deleted user : ", deletedTodoUser);
+    console.log("deleted todo : ", deletedTodo);
+    return res.status(200).json({
+      success: true,
+      message: "deleted todo."
+    })
+
+  } catch (error) {
+    console.log("error while deleting todo.");
+    return res.status(500).json({
+      success: false,
+      message: "error while deleting."
+    })
+  }
 });
 
-router.delete('/:id', adminMiddleware, (req, res) => {
+router.delete('/:id', adminMiddleware, async (req, res) => {
   // Implement delete todo by id logic
+  try {
+    let todoid = req.params.id;
+    if (!todoid) {
+      console.log("todoid not present in req.body.");
+      return res.status(400).json({
+        success: false,
+        message: "todoid not present. Can not delete todo."
+      })
+    }
+
+    let todo = await Todo.findById(todoid);
+
+    if (!todo) {
+      console.log("no todo in db with mentioned id.");
+      return res.status(400).json({
+        success: false,
+        message: "todo not present with this id in db. Can not delete todo."
+      })
+    }
+    let deletedTodoUser = await User.findOneAndUpdate({ _id: userid }, { $pull: { todo: { _id: todoid } } });
+    let deletedTodo = await Todo.findByIdAndDelete(todoid);
+    console.log("deleted user : ", deletedTodoUser);
+    console.log("deleted todo : ", deletedTodo);
+    return res.status(200).json({
+      success: true,
+      message: "deleted todo."
+    })
+  }
+  catch (error) {
+    console.log("error while deleting todo.");
+    return res.status(500).json({
+      success: false,
+      message: "error while deleting."
+    })
+  }
+
 });
 
 
-router.get('/read', adminMiddleware, (req, res) => {
+router.get('/read', adminMiddleware, async (req, res) => {
   // Implement fetching all todo logic
+  let token = req.header('token');
+  let decoded = jwt.verify(token, JWT_SECRET_KEY)
+  let userid = decoded.userid;
+
+  if (!userid) {
+    console.log("Can't find userid.");
+    return res.status(400).json({
+      success: false,
+      message: "Can't find userid."
+    })
+  }
+
+
+  let allTodos = await Todo.find({ user: userid });
+  console.log("alltodos : ", allTodos);
+  return res.status(200).json({
+    success: true,
+    message: "found all todos.",
+    todos: todos
+  })
 });
 
 router.get('/:id', adminMiddleware, (req, res) => {

@@ -8,9 +8,9 @@ mongoose.connect('your-mongodb-url');
 
 const UserSchema = new mongoose.Schema({
   // Schema definition here
+  password: String,
   username: String,
   firstname: String,
-  lastname: String,
   email: { type: email, unique: true },
   todo: [{ type: ObjectId, ref: 'Todo' }]
 });
