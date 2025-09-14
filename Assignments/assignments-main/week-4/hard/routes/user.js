@@ -1,13 +1,15 @@
 const { Router } = require("express");
-const router = Router();
+const Userrouter = Router();
 const userMiddleware = require("../middleware/user");
-const { z, success } = require('zod');
+const { z } = require('zod');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User, Todo } = require('../database/index.js')
+require('dotenv').config();
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 // User Routes
-router.post('/signup', async (req, res) => {
+Userrouter.post('/signup', async (req, res) => {
   // Implement user signup logic
   try {
     let email = req.body.email;
@@ -29,8 +31,8 @@ router.post('/signup', async (req, res) => {
       username: z.string().min(3).max(50)
     })
 
-    let input = { email, username, password }
-    const parsedBody = requiredBody.safeParse(input);
+    // let input = { email, username, password }
+    const parsedBody = requiredBody.safeParse({ email: email, username: username, password: password });
     if (!parsedBody.success) {
       let prettyError = z.prettifyError(parsedBody.error);
       console.log("format of email || password || username is not correct.", prettyError);
@@ -61,6 +63,11 @@ router.post('/signup', async (req, res) => {
       email: email,
       username: username
     });
+
+    return res.status(200).json({
+      success: true,
+      message: "user entry created.",
+    })
   }
   catch (error) {
     console.log("error while signing up.");
@@ -72,7 +79,7 @@ router.post('/signup', async (req, res) => {
 
 });
 
-router.post('/login', async (req, res) => {
+Userrouter.post('/login', async (req, res) => {
   // Implement user login logic
   try {
     let email = req.body.email;
@@ -131,8 +138,12 @@ router.post('/login', async (req, res) => {
     }
 
     let token = jwt.sign(payload, JWT_SECRET_KEY)
-    console.log("token generated.");
-    res.header('token') = token;
+    console.log("token generated.", token);
+    res.header("token", token);
+    console.log("req.header : ", req.header)
+    // console.log('req.header.token : ', req.header.token)
+    // console.log("req.header('token')", req.header('token'));
+    console.log("req.header['token']  : ", req.headers['token']);
     return res.status(200).json({
       success: true,
       message: "logged in success."
@@ -149,7 +160,7 @@ router.post('/login', async (req, res) => {
 
 });
 
-router.get('/todos', userMiddleware, async (req, res) => {
+Userrouter.get('/todos', userMiddleware, async (req, res) => {
   try {
     // Implement logic for getting todos for a user
     let token = req.header('token');
@@ -186,11 +197,11 @@ router.get('/todos', userMiddleware, async (req, res) => {
 });
 
 
-router.post('/logout', userMiddleware, (req, res) => {
+Userrouter.post('/logout', userMiddleware, (req, res) => {
   // Implement logout logic
   try {
     //delete tokens 
-    req.header('token') = null;
+    res.header['token'] = null;
     //req.header('userid') = null;
     console.log("logged out success.")
     return res.status(200).json({
@@ -206,4 +217,4 @@ router.post('/logout', userMiddleware, (req, res) => {
   }
 });
 
-module.exports = router
+module.exports = Userrouter;

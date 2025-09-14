@@ -1,13 +1,20 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { default: mongoose } = require("mongoose");
+require('jsonwebtoken')
 dotenv.config();
+
+const Todorouter = require('./routes/todo.js');
+const Userrouter = require('./routes/user.js');
 
 const app = express();
 const port = process.env.PORT;
 const url = process.env.DB_URL;
 
 app.use(express.json());
+
+app.use('/api/v1/user', Userrouter);
+app.use('/api/v1/user/todo', Todorouter);
 
 app.get("/healthy", (req, res) => res.send("I am Healthy"));
 

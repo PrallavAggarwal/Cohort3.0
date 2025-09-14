@@ -1,18 +1,26 @@
 const { Router } = require("express");
-const adminMiddleware = require("../middleware/user");
 const { User, Todo } = require('../database/index.js');
-const { success } = require("zod");
-const router = Router();
+const userMiddleware = require("../middleware/user");
+const Todorouter = Router();
+const jwt = require('jsonwebtoken')
+require('dotenv').config();
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+// const express = require('express');
+// const app = express();
+// app.use(express.json());
 
 // todo Routes
-router.post('/create', async (req, res) => {
+Todorouter.post('/create', userMiddleware, async (req, res) => {
   // Implement todo creation logic
   let title = req.body.title;
   let description = req.body.description;
   let token = req.header('token');
   let decoded = jwt.verify(token, JWT_SECRET_KEY)
-  let userid = decoded.userid;
-
+  let userid = decoded['userid'];
+  console.log("decode data : ", decoded);
+  console.log("userid : ", decoded['userid'])
+  console.log("provided title : ", title);
+  console.log("provided description : ", description)
 
   //check whether empty or not 
   if (!title || !description || !userid) {
@@ -32,13 +40,13 @@ router.post('/create', async (req, res) => {
     description,
     userid
   }
-
+  let date = new Date().toLocaleString();
   //Now add to database
   const done = await Todo.create({
     title: title,
     description: description,
     userid: userid,
-    starttime: new Date().now().toLocaleString(),
+    starttime: date,
 
   })
   //now since todo collection is updated with userid
@@ -80,14 +88,14 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.put('/update', adminMiddleware, async (req, res) => {
+Todorouter.put('/update', userMiddleware, async (req, res) => {
   // Implement update todo  logic
   let id = req.body.todoid;
   let title = req.body.title;
   let description = req.body.description;
   let token = req.header('token');
   let decoded = jwt.verify(token, JWT_SECRET_KEY)
-  let userid = decoded.userid;
+  let userid = decoded['userid'];
 
   //check id empty or not 
   if (!id || !userid) {
@@ -119,13 +127,13 @@ router.put('/update', adminMiddleware, async (req, res) => {
     try {
       if (title) {
         title = String(title);
-        await Todo.findOneAndUpdate({ _id: todoid }, { title: title });
+        await Todo.findOneAndUpdate({ _id: id }, { title: title });
         console.log("title updated successfully.");
 
       }
       if (description) {
         description = String(description);
-        await Todo.findOneAndUpdate({ _id: todoid }, { description: description })
+        await Todo.findOneAndUpdate({ _id: id }, { description: description })
         console.log("description updated successfully.");
       }
       return res.status(200).json({
@@ -154,7 +162,7 @@ router.put('/update', adminMiddleware, async (req, res) => {
 }
 );
 
-router.delete('/delete', adminMiddleware, async (req, res) => {
+Todorouter.delete('/delete', userMiddleware, async (req, res) => {
   // Implement delete todo logic
   try {
     let todoid = req.body.todoid;
@@ -197,7 +205,7 @@ router.delete('/delete', adminMiddleware, async (req, res) => {
   }
 });
 
-router.delete('/:id', adminMiddleware, async (req, res) => {
+Todorouter.delete('/:id', userMiddleware, async (req, res) => {
   // Implement delete todo by id logic
   try {
     let todoid = req.params.id;
@@ -218,8 +226,10 @@ router.delete('/:id', adminMiddleware, async (req, res) => {
         message: "todo not present with this id in db. Can not delete todo."
       })
     }
-    let deletedTodoUser = await User.findOneAndUpdate({ _id: userid }, { $pull: { todo: { _id: todoid } } });
+
     let deletedTodo = await Todo.findByIdAndDelete(todoid);
+    let userid = deletedTodo.user;
+    let deletedTodoUser = await User.findOneAndUpdate({ _id: userid }, { $pull: { todo: { _id: todoid } } });
     console.log("deleted user : ", deletedTodoUser);
     console.log("deleted todo : ", deletedTodo);
     return res.status(200).json({
@@ -238,11 +248,11 @@ router.delete('/:id', adminMiddleware, async (req, res) => {
 });
 
 
-router.get('/read', adminMiddleware, async (req, res) => {
+Todorouter.get('/read', userMiddleware, async (req, res) => {
   // Implement fetching all todo logic
   let token = req.header('token');
   let decoded = jwt.verify(token, JWT_SECRET_KEY)
-  let userid = decoded.userid;
+  let userid = decoded['userid'];
 
   if (!userid) {
     console.log("Can't find userid.");
@@ -253,17 +263,17 @@ router.get('/read', adminMiddleware, async (req, res) => {
   }
 
 
-  let allTodos = await Todo.find({ user: userid });
+  let allTodos = await Todo.find({ userid: userid });
   console.log("alltodos : ", allTodos);
   return res.status(200).json({
     success: true,
     message: "found all todos.",
-    todos: todos
+    todos: allTodos
   })
 });
-
-router.get('/:id', adminMiddleware, (req, res) => {
-  // Implement fetching todo by id logic
-});
-
-module.exports = router;
+//
+// router.get('/:id', adminMiddleware, (req, res) => {
+//   // Implement fetching todo by id logic
+// });
+//
+module.exports = Todorouter;

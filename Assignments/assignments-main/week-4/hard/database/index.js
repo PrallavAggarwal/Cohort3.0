@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
+require('dotenv').config();
+const url = process.env.DB_URL;
 
 // Connect to MongoDB
-mongoose.connect('your-mongodb-url');
+mongoose.connect(url);
 
 // Define schemas
 
@@ -11,18 +13,18 @@ const UserSchema = new mongoose.Schema({
   password: String,
   username: String,
   firstname: String,
-  email: { type: email, unique: true },
+  email: { type: String, unique: true },
   todo: [{ type: ObjectId, ref: 'Todo' }]
 });
 
 const TodoSchema = new mongoose.Schema({
   // Schema definition here
   todoid: ObjectId,
-  user: { type: ObjectId, ref: 'User' },
+  userid: { type: ObjectId, ref: 'User' },
   title: String,
   description: String,
-  starttime: Date,
-  endtime: Date,
+  starttime: String,
+  endtime: String,
 });
 
 const User = mongoose.model('User', UserSchema);
