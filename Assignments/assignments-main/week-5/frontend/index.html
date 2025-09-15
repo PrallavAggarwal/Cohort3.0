@@ -5,9 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taskify Frontend</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
 <body>
     <!-- start writing code -->
+    <div class = 'container'>
+      <div id="notification">
+        
+      </div>
+      <div id = "sign-up">
+        <form id="signup-form">
+       <label for="username">Username</label>
+      <input type="text" name="username" id="signup-username" value="">
+      <br>
+      <label for="email">Email</label>
+      <input type="email" name="email" id="signup-email" value="">
+      <br>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="signup-password" value="">
+      <br>
+      <button type="submit">Sign Up</button>
+        </form>
+      <p id="Already-have-account">Already have account.</p>
+      </div>
+      <div id = "sign-in" style="display:none;">
+         <form id="signin-form">
+      <label for="email">Email</label>
+      <input type="email" name="email" id="signin-email" value="">
+      <br>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="signin-password" value="">
+      <br>
+      <button type="submit">Log In</button>
+
+      </div>
+
+      <div id = "todo" style="display:none;">
+        <h2>List of your todos.</h2>
+        <ul id = 'list-of-todo'>
+          
+        </ul>
+        <h3>Create todo by filling form.</h3>
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" value="">
+        <br>
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description" value="">
+        <p id = "create-todo">Create Todo</p>
+      <p id="logout">Log out</p>
+      </div>
+
+    </div>
     <script src="./script.js"></script>    
 </body>
 </html>

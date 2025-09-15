@@ -1,7 +1,7 @@
 //  start writing your code from here
 
 const { Router } = require("express");
-const { User, Todo } = require('../database/index.js');
+const { User, Todo } = require('../db/index.js');
 const userMiddleware = require("../middleware/user");
 const Todorouter = Router();
 const jwt = require('jsonwebtoken')

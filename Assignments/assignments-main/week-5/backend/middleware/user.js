@@ -2,7 +2,7 @@
 
 const jwt = require('jsonwebtoken');
 
-const { User } = require('../database/index.js')
+const { User } = require('../db/index.js')
 const { success } = require('zod');
 require('dotenv').config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
@@ -53,7 +53,8 @@ async function userMiddleware(req, res, next) {
     console.log("Error while user authentication.");
     return res.status(500).json({
       success: false,
-      message: "error while user authentication."
+      message: "error while user authentication.",
+      error: error
     })
   }
 }

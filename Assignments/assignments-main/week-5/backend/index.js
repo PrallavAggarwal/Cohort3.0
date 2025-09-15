@@ -1,15 +1,16 @@
 // start writing from here
 
 const express = require("express");
+const app = express();
 const dotenv = require("dotenv");
 const { default: mongoose } = require("mongoose");
 require('jsonwebtoken')
 dotenv.config();
-
+const cors = require('cors')
+app.use(cors());
 const Todorouter = require('./routes/todo.js');
 const Userrouter = require('./routes/user.js');
 
-const app = express();
 const port = process.env.PORT;
 const url = process.env.DB_URL;
 

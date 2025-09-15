@@ -6,7 +6,7 @@ const userMiddleware = require("../middleware/user");
 const { z } = require('zod');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { User, Todo } = require('../database/index.js')
+const { User, Todo } = require('../db/index.js')
 require('dotenv').config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -60,12 +60,12 @@ Userrouter.post('/signup', async (req, res) => {
     let hashedPassword = await bcrypt.hash(password, 4);
 
     //create entry in db 
-    await User.create({
+    let usr = await User.create({
       password: hashedPassword,
       email: email,
       username: username
     });
-
+    console.log("user created after signing up : \n", usr);
     return res.status(200).json({
       success: true,
       message: "user entry created.",
@@ -138,17 +138,18 @@ Userrouter.post('/login', async (req, res) => {
       email: email,
       userid: result._id
     }
-
+    console.log("user after login : \n", result);
     let token = jwt.sign(payload, JWT_SECRET_KEY)
     console.log("token generated.", token);
-    res.header("token", token);
+    //    res.header("token", token);
     console.log("req.header : ", req.header)
     // console.log('req.header.token : ', req.header.token)
     // console.log("req.header('token')", req.header('token'));
-    console.log("req.header['token']  : ", req.headers['token']);
+    //   console.log("res.header['token']  : ", res.header['token']);
     return res.status(200).json({
       success: true,
-      message: "logged in success."
+      message: "logged in success.",
+      token: token
     })
   }
   catch (error) {
