@@ -122,13 +122,45 @@ async function loadTodos() {
     })
     let data = await response.json();
     console.log("data for todo/read : \n", data)
+    document.getElementById('list-of-todo').innerHTML = ``;
     data.todos.forEach((e, index) => {
       console.log("todo : ", e);
       let li = document.createElement('li')
-      li.innerHTML = `${index + 1} : ${e.title}`;
-
-      li.setAttribute('id', e.id);
+      //      let button = document.createElement('button')
+      li.innerHTML = `${index + 1} : ${e.title}<button id = '${e._id}'>Delete</button>`;
+      //     button.setAttribute('id', e._id)
+      //   button.setAttribute('class', 'todo-button')
+      //   li.setAttribute('id', e._id);
       document.getElementById('list-of-todo').appendChild(li)
+      //   document.getElementById(`${e._id}`).appendChild(button);
+      document.getElementById(`${e._id}`).addEventListener('click', async (event) => {
+        console.log(event.target.id)
+        try {
+          let res = await fetch('http://localhost:3001/api/v1/user/todo/delete', {
+            method: "DELETE",
+            body: JSON.stringify({ todoid: event.target.id }),
+            headers: {
+              "Content-Type": "application/json",
+              "Token": `${localStorage.getItem('token')}`
+            }
+          });
+          let data = await res.json()
+          if (data.success) {
+            console.log("Message for todo", data.message);
+            document.getElementById('notification').innerHTML = `<h2>${data.message}</h2>`
+            loadTodos();
+
+          }
+          else {
+            console.log("Message for todo", data.message);
+            document.getElementById('notification').innerHTML = `<h2>${data.message}</h2>`
+          }
+        }
+        catch (error) {
+          console.log("Message for todo", error);
+          document.getElementById('notification').innerHTML = `<h2>${error}</h2>`
+        }
+      })
     })
 
     return;
@@ -164,6 +196,10 @@ document.getElementById('create-todo').addEventListener('click', async (e) => {
   }
 })
 
+
+// document.getElementsByClassName('button').addEventListener('click', (e) => {
+//   console.log(e.target)
+// })
 
 document.getElementById('Already-have-account').addEventListener('click', (e) => {
   document.getElementById('notification').innerHTML = `<h2>Appriciated. Now login.</h2>`
