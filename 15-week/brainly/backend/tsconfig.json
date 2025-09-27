@@ -16,8 +16,7 @@
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
-    "declarationMap": true,
-    // Stricter Typechecking Options
+    "declarationMap": true, // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     // Style Options
@@ -35,5 +34,8 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "include": [
+    "./environment.d.ts"
+  ]
 }

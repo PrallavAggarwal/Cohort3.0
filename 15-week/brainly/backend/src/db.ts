@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import { model, Schema } from 'mongoose';
-// import dotenv from "dotenv";
-// dotenv.config()
-// console.log(process.env.DBURL);
-// let url = process.env.DBURL
+import * as dotenv from "dotenv";
+// import 'dotenv/config';
+dotenv.config()
+console.log(process.env.DBURL);
+let url = process.env.DBURL
 import { DBURL } from "./config.js";
-mongoose.connect(DBURL)
+await mongoose.connect(url)
 
 
 const UserModel = new Schema({
