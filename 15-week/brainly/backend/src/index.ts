@@ -110,6 +110,10 @@ app.post('/api/v1/content', (req, res) => {
 
 });
 
-app.post('/api/v1/', (req, res) => {
+app.post('/api/v1/brain:shareLink', (req, res) => {
+  try {
 
+  } catch (error) {
+
+  }
 });
